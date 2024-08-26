@@ -4,9 +4,23 @@
 #include "color.h"
 #include "ray.h"
 
+bool hitSphere(const point3& center, float radius, const ray& r) {
+    vec3 oc = center - r.origin();
+    float a = dot(r.direction(), r.direction());
+    float b = -2.0 * dot(r.direction(), oc);
+    float c = dot(oc, oc) - radius * radius;
+    float discriminant = b*b - 4*a*c;
+    return discriminant >= 0;
+}
+
 color rayColor(const ray& r) {
+    color sc = color(1.0, 0.75, 0.25);
     color c1 = color(1.0, 0.25, 0.75);
     color c2 = color(0.25, 0.50, 1.0);
+
+    if (hitSphere(point3(0, 0, -1.0), 0.5, r)) {
+        return sc;
+    }
 
     vec3 unitDir = unitVector(r.direction());
     float a = 0.5 * (unitDir.y() + 1.0);
