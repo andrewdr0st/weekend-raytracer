@@ -1,25 +1,17 @@
-#include <iostream>
+#include "util.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "sphere.h"
 
-#include "vec3.h"
-#include "color.h"
-#include "ray.h"
 
-bool hitSphere(const point3& center, float radius, const ray& r) {
-    vec3 oc = center - r.origin();
-    float a = dot(r.direction(), r.direction());
-    float b = -2.0 * dot(r.direction(), oc);
-    float c = dot(oc, oc) - radius * radius;
-    float discriminant = b*b - 4*a*c;
-    return discriminant >= 0;
-}
-
-color rayColor(const ray& r) {
+color rayColor(const ray& r, const hittable& world) {
     color sc = color(1.0, 0.75, 0.25);
     color c1 = color(1.0, 0.25, 0.75);
     color c2 = color(0.25, 0.50, 1.0);
 
-    if (hitSphere(point3(0, 0, -1.0), 0.5, r)) {
-        return sc;
+    hitRecord rec;
+    if (world.hit(r, interval(0, infinity), rec)) {
+        return 0.5 * (rec.normal + sc);
     }
 
     vec3 unitDir = unitVector(r.direction());
@@ -34,6 +26,10 @@ int main() {
     int imageWidth = 600;
     int imageHeight = int(imageWidth / aspectRatio);
     imageHeight = imageHeight < 1 ? 1 : imageHeight;
+
+    hittableList world;
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
     float viewportHeight = 2.0;
     float viewportWidth = viewportHeight * (float(imageWidth) / imageHeight);
@@ -58,7 +54,7 @@ int main() {
             vec3 rayDir = pixelCenter - cameraCenter;
             ray r = ray(cameraCenter, rayDir);
 
-            color pixelColor = rayColor(r);
+            color pixelColor = rayColor(r, world);
             writeColor(std::cout, pixelColor);
         }
     }

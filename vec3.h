@@ -1,8 +1,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 
-#include <cmath>
-#include <iostream>
+#include "util.h"
 
 class vec3 {
     public:
@@ -15,7 +14,7 @@ class vec3 {
         float y() const { return e[1]; }
         float z() const { return e[2]; }
 
-        vec3 operator-() { return vec3(-e[0], -e[1], -e[2]); }
+        vec3 operator-() const { return vec3(-e[0], -e[1], -e[2]); }
         float operator[](int i) const { return e[i]; }
         float& operator[](int i) { return e[i]; }
 
