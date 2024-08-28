@@ -17,6 +17,14 @@ inline float deg2Rad(float degrees) {
     return degrees * pi / 180.0;
 }
 
+inline float randomFloat() {
+    return std::rand() / (RAND_MAX / 1.0);
+}
+
+inline float randomFloat(float min, float max) {
+    return min + (max - min) * randomFloat();
+}
+
 
 #include "color.h"
 #include "interval.h"

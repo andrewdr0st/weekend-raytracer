@@ -6,8 +6,9 @@
 
 class Camera {
     public:
-        float aspectRatio = 16.0 / 9.0;
-        int imageWidth = 600;
+        float aspectRatio = 1.0;
+        int imageWidth = 100;
+        int samplesPerPixel = 10;
 
         void render(const hittable& world) {
             initialize();
@@ -17,12 +18,12 @@ class Camera {
             for (int j = 0; j < imageHeight; j++) {
                 std::clog << "\rScanlines remaining: " << (imageHeight - j) << ' ' << std::flush;
                 for (int i = 0; i < imageWidth; i++) {
-                    vec3 pixelCenter = upperLeftPixel + (i * pixelDeltaU) + (j * pixelDeltaV);
-                    vec3 rayDir = pixelCenter - center;
-                    ray r = ray(center, rayDir);
-
-                    color pixelColor = rayColor(r, world);
-                    writeColor(std::cout, pixelColor);
+                    color pixelColor(0, 0, 0);
+                    for (int sample = 0; sample < samplesPerPixel; sample++) {
+                        ray r = getRay(i, j);
+                        pixelColor += rayColor(r, world);
+                    }
+                    writeColor(std::cout, pixelSamplesScale * pixelColor);
                 }
             }
 
@@ -35,10 +36,13 @@ class Camera {
         point3 upperLeftPixel;
         vec3 pixelDeltaU;
         vec3 pixelDeltaV;
+        float pixelSamplesScale;
 
         void initialize() {
             imageHeight = int(imageWidth / aspectRatio);
             imageHeight = imageHeight < 1 ? 1 : imageHeight;
+
+            pixelSamplesScale = 1.0 / samplesPerPixel;
 
             float viewportHeight = 2.0;
             float viewportWidth = viewportHeight * (float(imageWidth) / imageHeight);
@@ -56,13 +60,26 @@ class Camera {
             upperLeftPixel = viewportUpperLeft + 0.5 * (pixelDeltaU + pixelDeltaV);
         }
 
+        ray getRay(int i, int j) const {
+            vec3 offset = sampleSquare();
+            vec3 pixelSample = upperLeftPixel + (i + offset.x()) * pixelDeltaU + (j + offset.y()) * pixelDeltaV;
+            vec3 rayOrigin = center;
+            vec3 rayDirection = pixelSample - rayOrigin;
+
+            return ray(rayOrigin, rayDirection);
+        }
+
+        vec3 sampleSquare() const {
+            return vec3(randomFloat() - 0.5, randomFloat() - 0.5, 0);
+        }
+
         color rayColor(const ray& r, const hittable& world) const {
-            color sc = color(1.0, 0.75, 0.25);
+            color sc = color(0.5, 0.5, 0.5);
             color c1 = color(1.0, 0.25, 0.75);
             color c2 = color(0.25, 0.50, 1.0);
 
             hitRecord rec;
-            if (world.hit(r, interval(0, infinity), rec)) {
+            if (world.hit(r, Interval(0, infinity), rec)) {
                 return 0.5 * (rec.normal + sc);
             }
 

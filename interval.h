@@ -3,13 +3,13 @@
 
 #include "util.h"
 
-class interval {
+class Interval {
   public:
     float min, max;
 
-    interval() : min(+infinity), max(-infinity) {}
+    Interval() : min(+infinity), max(-infinity) {}
 
-    interval(float min, float max) : min(min), max(max) {}
+    Interval(float min, float max): min(min), max(max) {}
 
     float size() const {
         return max - min;
@@ -23,10 +23,20 @@ class interval {
         return min < x && x < max;
     }
 
-    static const interval empty, universe;
+    float clamp(float x) const {
+        if (x < min) {
+            return min;
+        } else if (x > max) {
+            return max;
+        } else {
+            return x;
+        }
+    }
+
+    static const Interval empty, universe;
 };
 
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);
+const Interval Interval::empty    = Interval(+infinity, -infinity);
+const Interval Interval::universe = Interval(-infinity, +infinity);
 
 #endif

@@ -23,13 +23,13 @@ class hittableList : public hittable {
             objects.push_back(obj);
         }
 
-        bool hit(const ray& r, interval rayT, hitRecord& rec) const override {
+        bool hit(const ray& r, Interval rayT, hitRecord& rec) const override {
             hitRecord tempRec;
             bool hitAnything = false;
             float closestSoFar = rayT.max;
 
             for (const auto& obj : objects) {
-                if (obj->hit(r, interval(rayT.min, closestSoFar), tempRec)) {
+                if (obj->hit(r, Interval(rayT.min, closestSoFar), tempRec)) {
                     hitAnything = true;
                     closestSoFar = tempRec.t;
                     rec = tempRec;
