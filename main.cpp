@@ -15,12 +15,14 @@ int main() {
     shared_ptr<Material> blueMat = make_shared<Lambertian>(color(0.25, 0.25, 1.0));
     shared_ptr<Material> whiteMetal = make_shared<Metal>(color(0.9, 0.9, 0.9), 0.25);
     shared_ptr<Material> bronzeMetal = make_shared<Metal>(color(0.8, 0.4, 0.1), 0.6);
+    shared_ptr<Material> glass = make_shared<Dielectric>(1.5);
 
     world.add(make_shared<sphere>(point3(0, -100.5, -1), 100, groundMat));
     world.add(make_shared<sphere>(point3(0, 0, -1), 0.5, blueMat));
-    world.add(make_shared<sphere>(point3(-1.1, -0.425, -0.6), 0.1, greenMat));
-    world.add(make_shared<sphere>(point3(-1.0, 0.25, -2.0), 0.75, whiteMetal));
-    world.add(make_shared<sphere>(point3(1.25, 0, -1), 0.5, bronzeMetal));
+    world.add(make_shared<sphere>(point3(-1.1, -0.425, -0.8), 0.1, greenMat));
+    world.add(make_shared<sphere>(point3(3.0, 0.15, -4.0), 0.75, whiteMetal));
+    world.add(make_shared<sphere>(point3(1.25, 0, -0.9), 0.5, bronzeMetal));
+    world.add(make_shared<sphere>(point3(-2.5, 0.05, -2.0), 0.6, glass));
     
 
     Camera camera;
