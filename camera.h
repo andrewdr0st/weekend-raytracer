@@ -3,6 +3,7 @@
 
 #include "util.h"
 #include "hittable.h"
+#include "material.h"
 
 class Camera {
     public:
@@ -85,8 +86,12 @@ class Camera {
 
             hitRecord rec;
             if (world.hit(r, Interval(0.001, infinity), rec)) {
-                vec3 dir = rec.normal + randomUnitVector();
-                return 0.5 * rayColor(ray(rec.p, dir), depth - 1, world);
+                ray scattered;
+                color attenuation;
+                if (rec.mat->scatter(r, rec, attenuation, scattered)) {
+                    return attenuation * rayColor(scattered, depth - 1, world);
+                }
+                return color(0, 0, 0);
             }
 
             vec3 unitDir = unitVector(r.direction());
