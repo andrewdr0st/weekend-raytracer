@@ -9,6 +9,7 @@ class Camera {
         float aspectRatio = 1.0;
         int imageWidth = 100;
         int samplesPerPixel = 10;
+        int maxDepth = 10;
 
         void render(const hittable& world) {
             initialize();
@@ -21,7 +22,7 @@ class Camera {
                     color pixelColor(0, 0, 0);
                     for (int sample = 0; sample < samplesPerPixel; sample++) {
                         ray r = getRay(i, j);
-                        pixelColor += rayColor(r, world);
+                        pixelColor += rayColor(r, maxDepth, world);
                     }
                     writeColor(std::cout, pixelSamplesScale * pixelColor);
                 }
@@ -73,14 +74,19 @@ class Camera {
             return vec3(randomFloat() - 0.5, randomFloat() - 0.5, 0);
         }
 
-        color rayColor(const ray& r, const hittable& world) const {
-            color sc = color(0.5, 0.5, 0.5);
-            color c1 = color(1.0, 0.25, 0.75);
-            color c2 = color(0.25, 0.50, 1.0);
+        color rayColor(const ray& r, int depth, const hittable& world) const {
+            static color sc = color(0.5, 0.5, 0.5);
+            static color c1 = color(1.0, 0.35, 0.65);
+            static color c2 = color(0.20, 0.40, 1.0);
+
+            if (depth == 0) {
+                return color(0, 0, 0);
+            }
 
             hitRecord rec;
-            if (world.hit(r, Interval(0, infinity), rec)) {
-                return 0.5 * (rec.normal + sc);
+            if (world.hit(r, Interval(0.001, infinity), rec)) {
+                vec3 dir = rec.normal + randomUnitVector();
+                return 0.5 * rayColor(ray(rec.p, dir), depth - 1, world);
             }
 
             vec3 unitDir = unitVector(r.direction());
