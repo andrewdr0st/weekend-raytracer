@@ -1,5 +1,7 @@
 # weekend-raytracer
 
+![render](./Renders/render1.png)
+
 Based on [_Ray Tracing in One Weekend_](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
 
 ## How to run
