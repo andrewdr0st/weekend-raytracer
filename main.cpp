@@ -37,6 +37,8 @@ int main() {
     camera.lookFrom = point3(-1.5, 1.5, 0.5);
     camera.lookAt = point3(0, 0, -1);
     camera.vup = point3(0, 1, 0);
+    camera.defocusAngle = 0.5;
+    camera.focusDist = 10;
 
     camera.render(world);
 

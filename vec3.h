@@ -104,6 +104,15 @@ inline vec3 unitVector(const vec3& v) {
     return v / v.length();
 }
 
+inline vec3 randomInUnitDisk() {
+    while (true) {
+        vec3 p = vec3(randomFloat(-1, 1), randomFloat(-1, 1), 0);
+        if (p.lengthSquared() < 1) {
+            return p;
+        }
+    }
+}
+
 inline vec3 randomInUnitSphere() {
     while (true) {
         vec3 p = vec3::random(-1, 1);
