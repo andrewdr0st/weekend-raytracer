@@ -4,7 +4,7 @@
 #include "hittable_list.h"
 #include "material.h"
 #include "sphere.h"
-
+#include "bvh.h"
 
 
 int main() {
@@ -26,7 +26,7 @@ int main() {
     world.add(make_shared<sphere>(point3(6, 1.75, -4.5), 1.75, bronzeMetal));
     world.add(make_shared<sphere>(point3(-0.25, 1.25, -0.25), 1.25, glass));
 
-    for (int z = -20; z <= 6; z++) {
+    for (int z = -10; z <= 6; z++) {
         int w = 4 + (6 - z) / 1.5;
         for (int x = -w; x <= w; x++) {
             float m = randomFloat();
@@ -44,12 +44,14 @@ int main() {
         }
     }
 
+    world = hittableList(make_shared<BVHNode>(world));
+
     Camera camera;
 
     camera.aspectRatio = 16.0 / 9.0;
-    camera.imageWidth = 800;
-    camera.samplesPerPixel = 400;
-    camera.maxDepth = 40;
+    camera.imageWidth = 400;
+    camera.samplesPerPixel = 10;
+    camera.maxDepth = 10;
     camera.fov = 60;
     camera.lookFrom = point3(0, 3, 5);
     camera.lookAt = point3(0, 0, 0);

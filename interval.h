@@ -11,6 +11,11 @@ class Interval {
 
     Interval(float min, float max): min(min), max(max) {}
 
+    Interval(const Interval& a, const Interval& b) {
+        min = a.min <= b.min ? a.min : b.min;
+        max = a.max >= b.max ? a.max : b.max;
+    }
+
     float size() const {
         return max - min;
     }
@@ -31,6 +36,11 @@ class Interval {
         } else {
             return x;
         }
+    }
+
+    Interval expand(float delta) const {
+        float padding = delta / 2;
+        return Interval(min - padding, max + padding);
     }
 
     static const Interval empty, universe;

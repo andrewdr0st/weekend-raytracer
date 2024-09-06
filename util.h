@@ -25,6 +25,10 @@ inline float randomFloat(float min, float max) {
     return min + (max - min) * randomFloat();
 }
 
+inline int randomInt(int min, int max) {
+    return int(randomFloat(min, max + 1));
+}
+
 
 #include "color.h"
 #include "interval.h"

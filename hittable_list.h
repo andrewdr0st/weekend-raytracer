@@ -4,7 +4,7 @@
 #include <vector>
 #include "util.h"
 #include "hittable.h"
-
+#include "aabb.h"
 
 class hittableList : public hittable {
     public:
@@ -21,6 +21,7 @@ class hittableList : public hittable {
 
         void add(shared_ptr<hittable> obj) {
             objects.push_back(obj);
+            bbox = AABB(bbox, obj->boundingBox());
         }
 
         bool hit(const ray& r, Interval rayT, hitRecord& rec) const override {
@@ -38,6 +39,13 @@ class hittableList : public hittable {
 
             return hitAnything;
         }
+
+        AABB boundingBox() const override {
+            return bbox;
+        }
+
+    private:
+        AABB bbox;
 };
 
 #endif
