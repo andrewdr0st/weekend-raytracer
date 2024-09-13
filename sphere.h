@@ -36,6 +36,7 @@ class sphere : public hittable {
             rec.p = r.at(rec.t);
             vec3 outwardNormal = (rec.p - center) / radius;
             rec.setFaceNormal(r, outwardNormal);
+            getSphereUV(outwardNormal, rec.u, rec.v);
             rec.mat = mat;
 
             return true;
@@ -50,6 +51,14 @@ class sphere : public hittable {
         float radius;
         shared_ptr<Material> mat;
         AABB bbox;
+
+        static void getSphereUV(const point3& p, float& u, float& v) {
+            float theta = std::acos(-p.y());
+            float phi = std::atan2(-p.z(), p.x()) + pi;
+
+            u = phi / (2 * pi);
+            v = theta / pi;
+        }
 };
 
 #endif
