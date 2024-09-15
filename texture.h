@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "color.h"
+#include "perlin.h"
 #include "rtw_stb_image.h"
 
 class Texture {
@@ -69,6 +70,19 @@ class ImageTexture : public Texture {
 
     private:
         rtw_image image;
+};
+
+class NoiseTexture : public Texture {
+    public:
+        NoiseTexture(float s): scale(s) {}
+
+        color value(float u, float v, const point3& p) const override {
+            return color(0.5, 0.5, 0.5) * (1 + std::sin(scale * p.z() + 10 * noise.turb(p, 7)));
+        }
+
+    private:
+        Perlin noise;
+        float scale;
 };
 
 #endif

@@ -54,7 +54,7 @@ void lottaBalls() {
     camera.imageWidth = 400;
     camera.samplesPerPixel = 10;
     camera.maxDepth = 10;
-    camera.fov = 60;
+    camera.fov = 70;
     camera.lookFrom = point3(0, 3, 5);
     camera.lookAt = point3(0, 0, 0);
     camera.vup = point3(0, 1, 0);
@@ -94,10 +94,16 @@ void doubleCheck() {
 void yoNotch() {
     auto imageTexture = make_shared<ImageTexture>("epicpoken.jpg");
     auto ballTex = make_shared<Lambertian>(imageTexture);
-    auto ball = make_shared<sphere>(point3(0, 0, 0), 2, ballTex);
+    auto ball = make_shared<sphere>(point3(0, 2, 4), 2, ballTex);
+    auto noiseTexture = make_shared<NoiseTexture>(4);
+    auto ballyTex = make_shared<Lambertian>(noiseTexture);
+    auto bally = make_shared<sphere>(point3(0, -200, 0), 200, ballyTex);
+    auto bingus = make_shared<sphere>(point3(0, 3, -5), 3, ballyTex);
 
     hittableList world;
     world.add(ball);
+    world.add(bally);
+    world.add(bingus);
     world = hittableList(make_shared<BVHNode>(world));
 
     Camera camera;
@@ -107,8 +113,8 @@ void yoNotch() {
     camera.samplesPerPixel = 10;
     camera.maxDepth = 10;
     camera.fov = 90;
-    camera.lookFrom = point3(5, 0.5, 0);
-    camera.lookAt = point3(0, 0, 0);
+    camera.lookFrom = point3(5, 2.5, 0);
+    camera.lookAt = point3(0, 1, 0);
     camera.vup = point3(0, 1, 0);
     camera.defocusAngle = 0.2;
     camera.focusDist = 5;
