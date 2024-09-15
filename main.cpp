@@ -4,6 +4,7 @@
 #include "hittable_list.h"
 #include "material.h"
 #include "sphere.h"
+#include "quad.h"
 #include "bvh.h"
 #include "texture.h"
 
@@ -122,12 +123,46 @@ void yoNotch() {
     camera.render(world);
 }
 
+void quadrilaterals() {
+    hittableList world;
+
+    shared_ptr<Material> orange = make_shared<Lambertian>(color(1.0, 0.5, 0.1));
+    shared_ptr<Material> yellow = make_shared<Lambertian>(color(1.0, 1.0, 0.2));
+    shared_ptr<Material> cyan = make_shared<Lambertian>(color(0.1, 1.0, 1.0));
+    shared_ptr<Material> purple = make_shared<Lambertian>(color(0.5, 0.1, 1.0));
+    shared_ptr<Material> magenta = make_shared<Lambertian>(color(1.0, 0.2, 1.0));
+
+    world.add(make_shared<Quad>(point3(-3,-2, 5), vec3(0, 0,-4), vec3(0, 4, 0), purple));
+    world.add(make_shared<Quad>(point3(-2,-2, 0), vec3(4, 0, 0), vec3(0, 4, 0), cyan));
+    world.add(make_shared<Quad>(point3( 3,-2, 1), vec3(0, 0, 4), vec3(0, 4, 0), magenta));
+    world.add(make_shared<Quad>(point3(-2, 3, 1), vec3(4, 0, 0), vec3(0, 0, 4), yellow));
+    world.add(make_shared<Quad>(point3(-2,-3, 5), vec3(4, 0, 0), vec3(0, 0,-4), orange));
+
+    world = hittableList(make_shared<BVHNode>(world));
+
+    Camera camera;
+
+    camera.aspectRatio = 16.0 / 9.0;
+    camera.imageWidth = 400;
+    camera.samplesPerPixel = 20;
+    camera.maxDepth = 10;
+    camera.fov = 90;
+    camera.lookFrom = point3(0, 1.0, 8);
+    camera.lookAt = point3(0, 0, 0);
+    camera.vup = point3(0, 1, 0);
+    camera.defocusAngle = 0.3;
+    camera.focusDist = 8;
+
+    camera.render(world);
+}
+
 
 int main() {
-    switch(3) {
+    switch(4) {
         case 1: lottaBalls(); break;
         case 2: doubleCheck(); break;
         case 3: yoNotch(); break;
+        case 4: quadrilaterals(); break;
     }
 
     return 0;
