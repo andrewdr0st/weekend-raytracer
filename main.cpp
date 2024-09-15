@@ -61,6 +61,7 @@ void lottaBalls() {
     camera.vup = point3(0, 1, 0);
     camera.defocusAngle = 0.5;
     camera.focusDist = 6;
+    camera.background = color(0.85, 0.7, 0.95);
 
     camera.render(world);
 }
@@ -88,6 +89,7 @@ void doubleCheck() {
     camera.vup = point3(0, 1, 0);
     camera.defocusAngle = 0.2;
     camera.focusDist = 5;
+    camera.background = color(0.85, 0.7, 0.95);
 
     camera.render(world);
 }
@@ -119,6 +121,7 @@ void yoNotch() {
     camera.vup = point3(0, 1, 0);
     camera.defocusAngle = 0.2;
     camera.focusDist = 5;
+    camera.background = color(0.85, 0.7, 0.95);
 
     camera.render(world);
 }
@@ -152,17 +155,46 @@ void quadrilaterals() {
     camera.vup = point3(0, 1, 0);
     camera.defocusAngle = 0.3;
     camera.focusDist = 8;
+    camera.background = color(0.85, 0.7, 0.95);
 
     camera.render(world);
 }
 
+void litFam() {
+    hittableList world;
+
+    auto pertext = make_shared<NoiseTexture>(4);
+    world.add(make_shared<sphere>(point3(0,-1000,0), 1000, make_shared<Lambertian>(pertext)));
+    world.add(make_shared<sphere>(point3(0, 2, 0), 2, make_shared<Lambertian>(pertext)));
+
+    auto difflight = make_shared<DiffuseLight>(color(1, 1, 1));
+    auto difflightr = make_shared<DiffuseLight>(color(1, 0.3, 0.3));
+    world.add(make_shared<Quad>(point3(3, 1, -2), vec3(2, 0, 0), vec3(0, 2, 0), difflight));
+    world.add(make_shared<sphere>(point3(0, 7, 0), 2, difflightr));
+
+    Camera cam;
+
+    cam.aspectRatio = 16.0 / 9.0;
+    cam.imageWidth = 400;
+    cam.samplesPerPixel = 100;
+    cam.maxDepth = 20;
+    cam.background = color(0, 0, 0);
+    cam.fov = 20;
+    cam.lookFrom = point3(26, 3, 6);
+    cam.lookAt = point3(0, 2, 0);
+    cam.vup = vec3(0, 1, 0);
+    cam.defocusAngle = 0;
+
+    cam.render(world);
+}
 
 int main() {
-    switch(4) {
+    switch(5) {
         case 1: lottaBalls(); break;
         case 2: doubleCheck(); break;
         case 3: yoNotch(); break;
         case 4: quadrilaterals(); break;
+        case 5: litFam(); break;
     }
 
     return 0;
